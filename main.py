@@ -97,13 +97,19 @@ def buscarNombre(nombre,direccion):
 #     print(resultado_google)
 
 def Busqueda_por_dirección(dir,tipo,rad=50):
-    coordenas=direccion_a_coordenadas(dir)
+    coordenas=address_to_coordinates(dir)
     url=url_google_alrededores(coordenas[0],coordenas[1],rad,tipo)
     return requests.get(url).json()
 def Alrededores_google(dir):
     pass
-def direccion_a_coordenadas():
-    pass
+
+
+def address_to_coordinates(address):
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address="+ address +"&key=" + token_google
+    response = requests.request("GET", url, headers={}, data={})
+    coordinates_dict = response.json()['results'][0]['geometry']['location']
+    return (coordinates_dict['lat'], coordinates_dict['lng'] )
+
         
 if  __name__=='__main__':
 
