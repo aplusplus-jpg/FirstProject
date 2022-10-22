@@ -1,14 +1,13 @@
-from ast import main
-from audioop import add
 import requests
 import pandas as pd
 import json
 import folium
 import time
 def Busqueda_por_dirección(dir,tipo,rad=50):
-    coordenas=direccion_a_coordenadas(dir)
+    coordenas=address_to_coordinates(dir)
     url=url_google_alrededores(coordenas[0],coordenas[1],rad,tipo)
     return requests.get(url).json()
+
 llaves = {"aguascalientes":"01","baja california sur":"03","baja california":"02","campeche":"04",
             "coahuila de zaragoza":"05","coahuila":"05","colima":"06","chiapas":"07",
             "chihuahua":"08","cdmx":"09","ciudad de méxico":"09","distrito federal":"09",
