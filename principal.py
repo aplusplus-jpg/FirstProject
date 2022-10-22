@@ -45,7 +45,7 @@ def url_denue_nombre(nombre,entidad_federal):
     return f"https://www.inegi.org.mx/app/api/denue/v1/consulta/Nombre/{nombre}/{entidad_federal}/1/10/{token_denue}"
 
 # Google
-token_google = "AIzaSyDJ0YiKOKwfksHXf6wKIk6J0SCkkh_wM3g"
+token_google = "AIzaSyB-Lk1YXKOcyS2dnrj2pDxvzeny43w7oFE"
 
 def url_google_alrededores(latitud,longitud,metros,condiciones):
     return f'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={latitud}%2C{longitud}&radius={metros}&type={condiciones}&key={token_google}'
@@ -104,7 +104,7 @@ def Alrededores_google(dir,nombre):
     coordenadas=address_to_coordinates(dir)
     print("dir",dir)
     print("coord",coordenadas)
-    url=url_google_alrededores(coordenadas['lat'],coordenadas['lng'],50,nombre)
+    url=url_google_alrededores(coordenadas[0],coordenadas[1],50,nombre)
     response=requests.request("GET",url,headers={},data={})
     return response
 def address_to_coordinates(address):

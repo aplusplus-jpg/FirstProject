@@ -1,5 +1,4 @@
 import json
-
 from principal import*
 
 def jasonalista(jason):
