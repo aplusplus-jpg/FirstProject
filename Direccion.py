@@ -108,6 +108,7 @@ def Busqueda_por_dirección(dir,tipo,rad=50):
     return requests.get(url).json()
 
 
+
 def alrededoresGoogle(dir,nombre):
     #regresa el id del lugar 
     coordenadas=address_to_coordinates(dir)
@@ -118,8 +119,7 @@ def alrededoresGoogle(dir,nombre):
         if nombre in i['name'] or i['name'] in nombre:
             print('placeid',i['place_id'])
             return i['place_id']
-    #falta caso extraordinario return null
-        
+
     
     
 def address_to_coordinates(address):
@@ -135,6 +135,7 @@ def address_to_coordinates(address):
     except:
         print("ingrese una idrección correcta")
     
+
 def busquedaIdGoogle(id):
     url="https://maps.googleapis.com/maps/api/place/details/json?place_id="+id
     fields="&fields=business_status%2Ctype%2Curl%2Cadr_address%2Ccurrent_opening_hours%2Cdelivery%2Cformatted_phone_number%2Cplace_id%2Cprice_level%2Crating%2Creviews%2Ctypes%2Curl%2Cuser_ratings_total%2Cwebsite"
@@ -147,10 +148,11 @@ def busquedaIdGoogle(id):
     print(url)
 
     response = requests.request("GET", url, headers=headers, data=payload)
+
     print(response.json())
     print(response.text()['adr_address'])
     #falta return
-    
+
 """if  __name__=='__main__':
 
     inicio_tiempo = time.time()
@@ -161,5 +163,4 @@ def busquedaIdGoogle(id):
 
 dir="C. Dr. José María Vértiz 1148, Independencia, Benito Juárez, 03630 Ciudad de México, CDMX"
 nom="Farmacia San Pablo Vertiz"
-
 json=busquedaIdGoogle(alrededoresGoogle(dir, nom))
