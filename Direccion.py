@@ -2,7 +2,7 @@ from dataclasses import fields
 import pandas as pd
 import requests
 from urllib import response
-
+from comparacion_cadenas import *
 import pandas as pd
 import requests
 from urllib import response
@@ -136,7 +136,7 @@ def address_to_coordinates(address):
     
 def busqueda_id_google(id):
     url="https://maps.googleapis.com/maps/api/place/details/json?place_id="+id
-    fields="&filds=name"
+    fields="&filds=name%2Cbussines_status%2Curl"
     token_api_google = "&key=AIzaSyDRhQ9HRGDmnGI6Rd79x1fp-vhCaWoJeYo"
     payload={}
     headers = {}
@@ -155,4 +155,4 @@ def busqueda_id_google(id):
 dir="C. Dr. José María Vértiz 1148, Independencia, Benito Juárez, 03630 Ciudad de México, CDMX"
 nom="Farmacia San Pablo Vertiz"
 
-busqueda_id_google(Alrededores_google(dir, nom))
+busqueda_id_google(Alrededores_google(dir, nom)) #Regresa ID y regresa lista de la versh

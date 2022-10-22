@@ -1,9 +1,3 @@
-<<<<<<< HEAD:main.py
-=======
-
-from audioop import add
-from urllib import response
->>>>>>> 66c318b923a2ff6c6175f6f928df941a827ef075:principal.py
 import requests
 import pandas as pd
 import json
