@@ -28,7 +28,9 @@ entidades = ["aguascalientes","baja california sur","baja california","campeche"
             "querétaro","quintana roo","san luis potosí","sinaloa","sonora",
             "tabasco","tamaulipas","tlaxcala","veracruz de ignacio de la llave","veracruz",
             "yucatán","zacatecas"]
-data = pd.read_csv("https://raw.githubusercontent.com/aplusplus-jpg/resources/main/examples.csv?token=GHSAT0AAAAAABZOXJDQAG63MDUZNGN4P6GWY2R6O7A", header=None)
+#data = pd.read_csv("https://raw.githubusercontent.com/aplusplus-jpg/resources/main/examples.csv?token=GHSAT0AAAAAABZOXJDQAG63MDUZNGN4P6GWY2R6O7A", header=None)
+def busqueda_placeid():
+    pass
 
 def buscarEntidad(direccion):
     for i in entidades:
@@ -62,7 +64,6 @@ def replace_text(text):
     fields="&fields=formatted_address%2Cname%2Cbusiness_status%2Cgeometry%2Cplace_id%2Ctype"
     imput_type="&inputtype=textquery"
     base_url= base_url + text+imput_type +fields+ token_i
-    print(base_url.replace(" ","%20"))
     return base_url.replace(" ","%20")
 def buscarNombreDenue(nombre,direccion):
     entidad_federal = buscarEntidad(direccion)
@@ -105,14 +106,18 @@ def Alrededores_google(dir,nombre):
     coordenadas=address_to_coordinates(dir)
     print("dir",dir)
     print("coord",coordenadas)
-    url=url_google_alrededores(coordenadas[0],coordenadas[1],50,nombre)
+    url=url_google_alrededores(coordenadas['lat'],coordenadas['lng'],50,nombre)
     response=requests.request("GET",url,headers={},data={})
     return response
 def address_to_coordinates(address):
     url = "https://maps.googleapis.com/maps/api/geocode/json?address="+ address +"&key=" + token_google
     response = requests.request("GET", url, headers={}, data={})
-    coordinates_dict = response.json()['results'][0]['geometry']['location']
-    return (coordinates_dict['lat'], coordinates_dict['lng'] )
+    try:
+        coordinates_dict = response.json()['results'][0]['geometry']['location']
+        return (coordinates_dict['lat'], coordinates_dict['lng'] )
+    except:
+        coordinates_dict = response.json()
+        return coordinates_dict
 
         
 """if  __name__=='__main__':
@@ -123,6 +128,6 @@ def address_to_coordinates(address):
     fin_tiempo = time.time()
     print("\n\n",fin_tiempo-inicio_tiempo,"""
 
-dir="REGINA,135,ACCE A,CENTRO #AREA 9#,CUAUHTEMOC,6090,125,126,CDMX"
+dire="REGINA 135 ACCE A CENTRO #AREA 9# CUAUHTEMOC 6090 125 126 CDMX"
 nom="CENTRO PAPELERO SUN-RISE SA DE CV"
-Alrededores_google(dir, nom)
+Alrededores_google(dire, nom)
