@@ -161,6 +161,7 @@ def busquedaIdGoogle(id):
     fin_tiempo = time.time()
     print("\n\n",fin_tiempo-inicio_tiempo,"""
 
+
 dir="C. Dr. José María Vértiz 1148, Independencia, Benito Juárez, 03630 Ciudad de México, CDMX"
 nom="Farmacia San Pablo Vertiz"
 json=busquedaIdGoogle(alrededoresGoogle(dir, nom))
