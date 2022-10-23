@@ -2,7 +2,7 @@ from dataclasses import fields
 import pandas as pd
 import requests
 from urllib import response
-from comparacion_cadenas import *
+
 import pandas as pd
 import requests
 from urllib import response
@@ -31,6 +31,11 @@ def Busqueda_por_dirección(dir,tipo,rad=50):
     url=url_google_alrededores(coordenas[0],coordenas[1],rad,tipo)
     return requests.get(url).json()
 
+def Busqueda_por_dirección(dir,tipo,rad=50):
+    coordenas=address_to_coordinates(dir)
+    url=url_google_alrededores(coordenas[0],coordenas[1],rad,tipo)
+    return requests.get(url).json()
+    
 def buscarEntidad(direccion):
     for i in entidades:
         if i in direccion.lower():
@@ -102,26 +107,13 @@ def buscarNombre(nombre,direccion):
 #     print("------------------")
 #     print(resultado_google)
 
-def Busqueda_por_dirección(dir,tipo,rad=50):
-    coordenas=address_to_coordinates(dir)
-    url=url_google_alrededores(coordenas[0],coordenas[1],rad,tipo)
-    return requests.get(url).json()
 
 
-
-def alrededoresGoogle(dir,nombre):
-    #regresa el id del lugar 
+def Alrededores_google(dir,nombre):
     coordenadas=address_to_coordinates(dir)
-    url=url_google_alrededores(coordenadas[0],coordenadas[1],10,nombre)
+    url=url_google_alrededores(coordenadas[0],coordenadas[1],5,nombre)
     response=requests.request("GET",url,headers={},data={})
-    
-    for i in response.json()['results']:
-        if nombre in i['name'] or i['name'] in nombre:
-            print('placeid',i['place_id'])
-            return i['place_id']
-
-    
-    
+    return response.json()
 def address_to_coordinates(address):
     # tener cuidado con como se pasa la dirección
     address=address.replace(" ", "%20")
@@ -135,19 +127,16 @@ def address_to_coordinates(address):
     except:
         print("ingrese una idrección correcta")
     
-
-def busquedaIdGoogle(id):
+def busqueda_id_google(id):
     url="https://maps.googleapis.com/maps/api/place/details/json?place_id="+id
-    fields="&fields=business_status%2Ctype%2Curl%2Ccurrent_opening_hours%2Cdelivery%2Cformatted_phone_number%2Cplace_id%2Cprice_level%2Crating%2Creviews%2Ctypes%2Curl%2Cuser_ratings_total%2Cwebsite"
+    fields="&filds=name"
     token_api_google = "&key=AIzaSyDRhQ9HRGDmnGI6Rd79x1fp-vhCaWoJeYo"
+    payload={}
+    headers = {}
     url=url+fields+token_api_google
-
     response = requests.request("GET", url, headers=headers, data=payload)
-
-    print(response.json())
+    print(response.json)
     
-    #falta return
-
 """if  __name__=='__main__':
 
     inicio_tiempo = time.time()
@@ -156,8 +145,8 @@ def busquedaIdGoogle(id):
     fin_tiempo = time.time()
     print("\n\n",fin_tiempo-inicio_tiempo,"""
 
-dir="C. Dr. José María Vértiz 1148, Independencia, Benito Juárez, 03630 Ciudad de México, CDMX"
-nom="Farmacia San Pablo Vertiz"
-json=busquedaIdGoogle(alrededoresGoogle(dir, nom))
-"""listacompleta=[aplanador(i) for i in listadeKeys if i == 'current_opening_hours']""" 
-    
+dir="verso 89 jaime torres bodet 13530 cdmx"
+nom="farmacias franco"
+print(Alrededores_google(dir, nom))
+id="Ek5WZXJzbyA4OSwgSmFpbWUgVG9ycmVzIEJvZGV0LCBUbMOhaHVhYywgMTM1MzAgU2FuIEp1YW4gSXh0YXlvcGFuLCBDRE1YLCBNZXhpY28iMBIuChQKEgnlxCWjRhvOhRE5SpX8QUfMgxBZKhQKEgl7nF-9RhvOhRFLFd1H7q8i8g"    
+busqueda_id_google(id)
