@@ -142,7 +142,7 @@ def busquedaIdGoogle(id):
     token_api_google = "&key=AIzaSyDRhQ9HRGDmnGI6Rd79x1fp-vhCaWoJeYo"
     url=url+fields+token_api_google
 
-    response = requests.request("GET", url, headers=headers, data=payload)
+    """response = requests.request("GET", url, headers=headers, data=payload)"""
 
     print(response.json())
     

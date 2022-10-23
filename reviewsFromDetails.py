@@ -1,8 +1,6 @@
 import requests
 import pandas as pd
 from Direccion import *
-    
-
 
 def flatJson(json):
     '''Toma un json, lo aplana y regresa una lista'''
