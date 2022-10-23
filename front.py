@@ -7,10 +7,16 @@ import plotly.express as px
 st.set_page_config(page_title = "Hackatoon 2022 BBVA",page_icon=":bar_chart:",layout="wide")
 st.title('A++ Hackaton BBVA - 2022')
 
+st.file_uploader("Please, upload your csv")
+#st.button("Read a dataset (.csv)", on_click=)
 
 #--------CARGA DE DATOS--------
-df = pd.read_excel('FirstProject\output.xlsx',nrows= 100)
-st.dataframe(df)
+#df = pd.read_excel('dataset/output.xlsx',nrows= 100)
+df = pd.read_csv('dataset/Final_Data_Hackathon_2022.csv')
+st.dataframe(df[0:5])
+
+for fila in df.iterrows():
+    st.text_area(fila)
 
 
 #-----SIDEBAR SECCION-----------
