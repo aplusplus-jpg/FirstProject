@@ -1,7 +1,6 @@
+from comparacion_cadenas import  coincidenciasNombres
 
-def coincidencia_dirección(dir1, dir2):
+def coincidenciaDirección(dir1, dir2):
     '''Return True if dir1 == dir2'''
-    if dir1 == dir2:
-        return True
-    else:
-        return False
+    return coincidenciasNombres(dir1,dir2)
+
