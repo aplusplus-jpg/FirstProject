@@ -1,31 +1,48 @@
-from dataclasses import fields
+import urllib.request, urllib.parse, urllib.error
+from bs4 import BeautifulSoup
+import ssl
+
+from cmath import nan
 import pandas as pd
 import requests
-from urllib import response
-from comparacion_cadenas import *
-import pandas as pd
-import requests
-from urllib import response
 
-llaves = {"aguascalientes":"01","baja california sur":"03","baja california":"02","campeche":"04",
-            "coahuila de zaragoza":"05","coahuila":"05","colima":"06","chiapas":"07",
-            "chihuahua":"08","cdmx":"09","ciudad de méxico":"09","distrito federal":"09",
-            "durango":"10","guanajuato":"11","guerrero":"12","hidalgo":"13","jalisco":"14","edo. de méxico":"15",
-            "michoacán de ocampo":"16","michoacán":"16","morelos":"17","nayarit":"18","nuevo león":"19","oaxaca":"20","puebla":"21",
-            "querétaro":"22","quintana roo":"23","san luis potosí":"24","sinaloa":"25","sonora":"26",
-            "tabasco":"27","tamaulipas":"28","tlaxcala":"29","veracruz de ignacio de la llave":"30","veracruz":"30",
-            "yucatán":"31","zacatecas":"32"
-            }
+import random 
 
-entidades = ["aguascalientes","baja california sur","baja california","campeche",
-            "coahuila de zaragoza","coahuila","colima","chiapas",
-            "chihuahua","cdmx","ciudad de méxico","distrito federal",
-            "durango","guanajuato","guerrero","hidalgo","jalisco","edo. de méxico",
-            "michoacán de ocampo","michoacán","morelos","nayarit","nuevo león","oaxaca","puebla",
-            "querétaro","quintana roo","san luis potosí","sinaloa","sonora",
-            "tabasco","tamaulipas","tlaxcala","veracruz de ignacio de la llave","veracruz",
-            "yucatán","zacatecas"]
-#data = pd.read_csv("https://raw.githubusercontent.com/aplusplus-jpg/resources/main/examples.csv?token=GHSAT0AAAAAABZOXJDQAG63MDUZNGN4P6GWY2R6O7A", header=None)
+
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
+def obtenercontacto(url):
+    '''A partir de la página de una PyME, se obtienen correo, facebook,
+    instagram, tiktok, twitter y youtube'''
+    links = {'correo':None, 'facebook':None, 'instagram':None,
+             'tiktok':None, 'twitter':None, 'youtube':None}
+    try:
+        html = urllib.request.urlopen(url, context=ctx).read()
+        soup = BeautifulSoup(html, 'html.parser')
+        tags = soup('a')
+        ref = [tag.get('href', None) for tag in tags]
+        for i in ref:
+            if '@' in i:
+                links['correo'] = i
+            if 'facebook' in i:
+                links['facebook'] = i
+            if 'instagram' in i:
+                links['instagram'] = i
+            if 'tiktok' in i:
+                links['tiktok'] = i
+            if 'twitter' in i:
+                links['twitter'] = i
+            if 'youtube' in i:
+                links['youtube'] = i
+        
+        return [direc for direc in links.values()]
+    except:
+        return links
+    
+
+
 def Busqueda_por_dirección(dir,tipo,rad=50):
     coordenas=address_to_coordinates(dir)
     url=url_google_alrededores(coordenas[0],coordenas[1],rad,tipo)
@@ -49,7 +66,7 @@ def url_denue_nombre(nombre,entidad_federal):
 token_google = "AIzaSyDJ0YiKOKwfksHXf6wKIk6J0SCkkh_wM3g"
 
 def url_google_alrededores(latitud,longitud,metros,condiciones):
-    return f'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={latitud}%2C{longitud}&radius={metros}&type={condiciones}&key={token_google}'
+    return f'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={latitud},{longitud}&radius={metros}&type={condiciones}&key={token_google}'
 
 def replace_text_search(text):
     base_url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query="
@@ -60,16 +77,11 @@ def replace_text_search(text):
 def replace_text(text):
     base_url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input="
     token_i = "&key=AIzaSyD9Jg7-4i7hnAQ7vXaCBaOSBZqdwdloHKg"
-    fields="&fields=formatted_address%2Cname%2Cbusiness_status%2Cgeometry%2Cplace_id%2Ctype"
+    fields="&fields=formatted_address,name,business_status,geometry,place_id,type"
     imput_type="&inputtype=textquery"
     base_url= base_url + text+imput_type +fields+ token_i
     return base_url.replace(" ","%20")
 
-def buscarNombreDenue(nombre,direccion):
-    entidad_federal = buscarEntidad(direccion)
-    nombre = nombre.replace("'"," ")
-    url = url_denue_nombre(nombre,entidad_federal)
-    return requests.get(url).json()
 
 def buscarNombreGoogle(nombre):
     response=requests.request("GET", replace_text(nombre), headers={}, data={})
@@ -78,36 +90,10 @@ def buscarNombreGoogle(nombre):
 def buscarAlrededoresDenue():
     pass
 
-def buscarNombre(nombre,direccion):
-    """
-    nombre = es una variable string que contiene el nombre del negocio
-    direccion = contiene la direccion del negocio como lista en coordenadas
-    (latitud y longitud)    
-    Esta fucion le pasamos los datos de un negocio y lo buscara en la base 
-    de datos de denue y google 
-    
-    """ 
-    resultado_denue = buscarNombreDenue(nombre,direccion)
-    resultado_google = buscarNombreGoogle(nombre)
-    
-    if resultado_denue == "No hay resultados." and len(resultado_google['candidates']) > 0:
-        if resultado_google['candidates'][0]['name'].lower() >= nombre:
-            print("si")
-    else:
-        print("si")
-#         if 
-    
-#    print("------------------")
-#     print(resultado_denue)
-#     print("------------------")
-#     print(resultado_google)
-
 def Busqueda_por_dirección(dir,tipo,rad=50):
     coordenas=address_to_coordinates(dir)
     url=url_google_alrededores(coordenas[0],coordenas[1],rad,tipo)
     return requests.get(url).json()
-
-
 
 def alrededoresGoogle(dir,nombre):
     #regresa el id del lugar 
@@ -116,9 +102,16 @@ def alrededoresGoogle(dir,nombre):
     response=requests.request("GET",url,headers={},data={})
     
     for i in response.json()['results']:
+        
         if nombre in i['name'] or i['name'] in nombre:
-            print('placeid',i['place_id'])
             return i['place_id']
+    return False
+  
+def buscarNombreDenue(nombre,direccion):
+    entidad_federal = buscarEntidad(direccion)
+    nombre = nombre.replace("'"," ")
+    url = url_denue_nombre(nombre,entidad_federal)
+    return requests.get(url).json()
 
     
     
@@ -137,27 +130,97 @@ def address_to_coordinates(address):
     
 
 def busquedaIdGoogle(id):
+    if id==False:
+        return "no se encontraron resultados"
     url="https://maps.googleapis.com/maps/api/place/details/json?place_id="+id
-    fields="&fields=business_status%2Ctype%2Curl%2Ccurrent_opening_hours%2Cdelivery%2Cformatted_phone_number%2Cplace_id%2Cprice_level%2Crating%2Creviews%2Ctypes%2Curl%2Cuser_ratings_total%2Cwebsite"
+    fields="&fields=business_status,geometry,type,url,current_opening_hours,delivery,formatted_phone_number,place_id,price_level,rating,reviews,types,url,user_ratings_total,website"
     token_api_google = "&key=AIzaSyDRhQ9HRGDmnGI6Rd79x1fp-vhCaWoJeYo"
     url=url+fields+token_api_google
+    headers={}
+    payload={}
 
-    """response = requests.request("GET", url, headers=headers, data=payload)"""
+    response = requests.request("GET", url, headers=headers, data=payload)
 
-    print(response.json())
+    return response.json()
     
-    #falta return
 
-"""if  __name__=='__main__':
 
-    inicio_tiempo = time.time()
-    for i in range(len(data[0])):
-        buscarNombre(data[0][i],data[1][i])
-    fin_tiempo = time.time()
-    print("\n\n",fin_tiempo-inicio_tiempo,"""
+def flatJson(lista_de_json):
+    path="Final.csv"
+    headers=['business_status', 'delivery', 'formatted_phone_number','nombre','place_id',"rating",'rating1','text1','rating2','text2','rating3','text3','rating4','text4','rating5','text5', 'types', 'url', 'user_ratings_total', 'website']
+    df=pd.DataFrame(columns=headers)
+    for json in lista_de_json:
+        Keys='business_status', 'delivery', 'formatted_phone_number', 'name', 'place_id', 'rating', 'reviews', 'types', 'url', 'user_ratings_total', 'website'
+        lista=[]
+        for key in Keys:
+            try:
+                
+                if key=='current_opening_hours':
 
-dir="C. Dr. José María Vértiz 1148, Independencia, Benito Juárez, 03630 Ciudad de México, CDMX"
-nom="Farmacia San Pablo Vertiz"
-json=busquedaIdGoogle(alrededoresGoogle(dir, nom))
-"""listacompleta=[aplanador(i) for i in listadeKeys if i == 'current_opening_hours']""" 
+                    """df1 = pd.json_normalize(json['result'][key]['periods']  , sep='_')
+                    lista.append(json['result'][key]['open_now'])
+                    lista.append(df1.values.tolist())
+                    lista.append(json['result'][key]['weekday_text'])"""
+                    continue
+                
+                if key=='reviews':
+                    try:
+                        c=0
+                        for i in range(6):
+                            lista.append(json['result'][key][i]['rating'])
+                            lista.append(json['result'][key][i]['text'])
+                            c+=1
+                
+                    except Exception as e:
+                        if c!=5:
+                            for i in range(5-c):
+                                lista.append(None)
+                                lista.append(None)
+                                
+                        
+        
+                    continue
+                if key=='geometry':
+
+                    continue
+                if key=='types':
+                    str=""
+                    for i in range(len(json['result'][key])):
+                        str=str+json['result'][key][i]
+                    lista.append(str)
+                    continue
+                if key=="website":
+                    
+                    print(obtenercontacto(json['result'][key]))
+
+                lista.append(json['result'][key])
+            except:      
+                lista.append(None)
+        print(lista)
+
+        df.loc[len(df)] = lista
+        
+        
     
+    return df.to_csv(path)
+    
+    
+tokens_google = ["AIzaSyDJ0YiKOKwfksHXf6wKIk6J0SCkkh_wM3g","AIzaSyBJd3stl1KcTQ-9YT0sA8ZhgaK1KUNsJzA"]
+token_google = random.choice(tokens_google)
+data=pd.read_csv("limpia.csv")
+def awsRequest(nombre,direccion):
+
+    return requests.get(f"https://mdta6lzp19.execute-api.us-east-1.amazonaws.com/negocio?nombre={nombre}&direccion={direccion}")
+def otra(x):   
+    a = []
+    for i in range(x):
+        print(data["NombComp"][i],"-",data["DirComp"][i])
+        a.append(awsRequest(data["NombComp"][i],data["DirComp"][i]).json())
+    return a   
+    
+
+
+
+lista=otra(1000)
+l2=flatJson(lista)
+
