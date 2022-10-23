@@ -1,8 +1,4 @@
-from dataclasses import fields
-import pandas as pd
-import requests
-from urllib import response
-
+from cmath import nan
 import pandas as pd
 import requests
 from urllib import response
@@ -65,11 +61,6 @@ def replace_text(text):
     base_url= base_url + text+imput_type +fields+ token_i
     return base_url.replace(" ","%20")
 
-def buscarNombreDenue(nombre,direccion):
-    entidad_federal = buscarEntidad(direccion)
-    nombre = nombre.replace("'"," ")
-    url = url_denue_nombre(nombre,entidad_federal)
-    return requests.get(url).json()
 
 def buscarNombreGoogle(nombre):
     response=requests.request("GET", replace_text(nombre), headers={}, data={})
@@ -78,36 +69,10 @@ def buscarNombreGoogle(nombre):
 def buscarAlrededoresDenue():
     pass
 
-def buscarNombre(nombre,direccion):
-    """
-    nombre = es una variable string que contiene el nombre del negocio
-    direccion = contiene la direccion del negocio como lista en coordenadas
-    (latitud y longitud)    
-    Esta fucion le pasamos los datos de un negocio y lo buscara en la base 
-    de datos de denue y google 
-    
-    """ 
-    resultado_denue = buscarNombreDenue(nombre,direccion)
-    resultado_google = buscarNombreGoogle(nombre)
-    
-    if resultado_denue == "No hay resultados." and len(resultado_google['candidates']) > 0:
-        if resultado_google['candidates'][0]['name'].lower() >= nombre:
-            print("si")
-    else:
-        print("si")
-#         if 
-    
-#    print("------------------")
-#     print(resultado_denue)
-#     print("------------------")
-#     print(resultado_google)
-
 def Busqueda_por_dirección(dir,tipo,rad=50):
     coordenas=address_to_coordinates(dir)
     url=url_google_alrededores(coordenas[0],coordenas[1],rad,tipo)
     return requests.get(url).json()
-
-
 
 def alrededoresGoogle(dir,nombre):
     #regresa el id del lugar 
@@ -117,8 +82,15 @@ def alrededoresGoogle(dir,nombre):
     
     for i in response.json()['results']:
         if nombre in i['name'] or i['name'] in nombre:
-            print('placeid',i['place_id'])
+            
             return i['place_id']
+        else:
+            return None
+def buscarNombreDenue(nombre,direccion):
+    entidad_federal = buscarEntidad(direccion)
+    nombre = nombre.replace("'"," ")
+    url = url_denue_nombre(nombre,entidad_federal)
+    return requests.get(url).json()
 
     
     
@@ -144,18 +116,41 @@ def busquedaIdGoogle(id):
 
     response = requests.request("GET", url, headers=headers, data=payload)
 
-    print(response.json())
-    print(response.text()['adr_address'])
-    #falta return
+    return response.json()
+    
 
-"""if  __name__=='__main__':
 
-    inicio_tiempo = time.time()
-    for i in range(len(data[0])):
-        buscarNombre(data[0][i],data[1][i])
-    fin_tiempo = time.time()
-    print("\n\n",fin_tiempo-inicio_tiempo,"""
+def flatJson(json):
+    Keys=['business_status', 'current_opening_hours', 'delivery', 'formatted_phone_number', 'place_id', 'rating', 'reviews', 'types', 'url', 'user_ratings_total', 'website']
+    lista=[]
 
-dir="C. Dr. José María Vértiz 1148, Independencia, Benito Juárez, 03630 Ciudad de México, CDMX"
-nom="Farmacia San Pablo Vertiz"
-json=busquedaIdGoogle(alrededoresGoogle(dir, nom))
+    for key in Keys:
+        
+        if key=='current_opening_hours':
+
+            df1 = pd.json_normalize(json['result'][key]['periods']  , sep='_')
+            lista.append(json['result'][key]['open_now'])
+            lista.append(df1.values.tolist())
+            lista.append(json['result'][key]['weekday_text'])
+            continue
+        
+        if key=='reviews':
+            try:
+                for i in range(6):
+                    df1=pd.json_normalize(json['result'][key][i], sep='_')
+                    lista.append(df1.values.tolist())
+
+
+            except Exception as e:
+
+                continue
+            continue
+        lista.append(json['result'][key])
+    print(lista)
+def main(csv):
+    df = pd.read_csv("csv")
+    for row in df.iterrows():
+        google=alrededoresGoogle(row.iloc[:,1],row.iloc[:,0])
+        denue=buscarNombreDenue(row.iloc[:,0],row.iloc[:,1])
+        
+
