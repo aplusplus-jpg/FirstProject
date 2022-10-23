@@ -164,5 +164,5 @@ def busquedaIdGoogle(id):
 dir="C. Dr. José María Vértiz 1148, Independencia, Benito Juárez, 03630 Ciudad de México, CDMX"
 nom="Farmacia San Pablo Vertiz"
 json=busquedaIdGoogle(alrededoresGoogle(dir, nom))
-"""listacompleta=[aplanador(i) for i in listadeKeys if i == 'current_opening_hours']"""
+"""listacompleta=[aplanador(i) for i in listadeKeys if i == 'current_opening_hours']""" 
     
