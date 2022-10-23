@@ -7,7 +7,7 @@ import requests
 import time
 import random
 import re
-
+import plotly.express as px
 from difflib import SequenceMatcher as SM
 
 st.set_page_config(page_title = "Hackaton 2022 BBVA",page_icon=":bar_chart:",layout="wide")
@@ -350,7 +350,7 @@ for i in len(a):
 
 
 archivo.close()
-
+x
 def awsRequestsentimientos(texto,idioma):
     return requests.get(f"https://rlanpvxdde.execute-api.us-east-1.amazonaws.com/default/sentimientos?texto={texto}&idioma={idioma}")
 
