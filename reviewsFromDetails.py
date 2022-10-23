@@ -5,6 +5,7 @@ from Direccion import *
 
 
 def flatJson(json):
+    '''Toma un json, lo aplana y regresa una lista'''
     Keys=['business_status', 'current_opening_hours', 'delivery', 'formatted_phone_number', 'place_id', 'rating', 'reviews', 'types', 'url', 'user_ratings_total', 'website']
     lista=[]
 
