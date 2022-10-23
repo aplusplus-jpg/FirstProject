@@ -114,17 +114,14 @@ def buscarNombreDenue(nombre,direccion):
     
     
 def address_to_coordinates(address):
-    # tener cuidado con como se pasa la dirección
-    address=address.replace(" ", "%20")
-
-    url = "https://maps.googleapis.com/maps/api/geocode/json?address="+ address +"&key=" + token_google
+    url = "https://maps.googleapis.com/maps/api/geocode/json?address="+ address +"&key=AIzaSyDJ0YiKOKwfksHXf6wKIk6J0SCkkh_wM3g"
     response = requests.request("GET", url, headers={}, data={})
     
     try:
         coordinates_dict = response.json()['results'][0]['geometry']['location']
         return (coordinates_dict['lat'], coordinates_dict['lng'] )
     except:
-        print("ingrese una idrección correcta")
+        return (0, 0)
     
 
 def busquedaIdGoogle(id):
@@ -210,3 +207,10 @@ def otra(x):
 lista=otra()
 #l2=flatJson(lista)
 
+<<<<<<< HEAD
+=======
+
+dir="C. Dr. José María Vértiz 1148, Independencia, Benito Juárez, 03630 Ciudad de México, CDMX"
+nom="Farmacia San Pablo Vertiz"
+json=busquedaIdGoogle(alrededoresGoogle(dir, nom))
+>>>>>>> main
