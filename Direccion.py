@@ -7,6 +7,8 @@ import pandas as pd
 import requests
 from urllib import response
 
+import json
+
 llaves = {"aguascalientes":"01","baja california sur":"03","baja california":"02","campeche":"04",
             "coahuila de zaragoza":"05","coahuila":"05","colima":"06","chiapas":"07",
             "chihuahua":"08","cdmx":"09","ciudad de méxico":"09","distrito federal":"09",
@@ -142,7 +144,7 @@ def busqueda_id_google(id):
     headers = {}
     url=url+fields+token_api_google
     response = requests.request("GET", url, headers=headers, data=payload)
-    print(response.text)
+    return response.text
     
 """if  __name__=='__main__':
 
@@ -153,6 +155,11 @@ def busqueda_id_google(id):
     print("\n\n",fin_tiempo-inicio_tiempo,"""
 
 dir="C. Dr. José María Vértiz 1148, Independencia, Benito Juárez, 03630 Ciudad de México, CDMX"
-nom="Farmacia San Pablo Vertiz"
+nom="Farmacia San Pablo"
 
 busqueda_id_google(Alrededores_google(dir, nom))
+#print(buscarNombreDenue(nom,dir))
+
+data = json.loads(busqueda_id_google(Alrededores_google(dir, nom)))
+print(data.keys())
+print(data['result']['address_components'])
